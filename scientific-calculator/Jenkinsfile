@@ -35,7 +35,7 @@ pipeline {
                     dir("${PROJECT_DIR}") {    
                         sh 'ls -la'
                         sh 'find . -name pom.xml'
-                        sh 'mvn clean verify'
+                        sh 'cd scientific-calculator && mvn clean verify'
                     } 
              }
         }
