@@ -1,0 +1,84 @@
+pipeline {
+    agent any
+            options{
+	            buildDiscarder(logRotator(
+	                daysToKeepStr: '10', 
+	                numToKeepStr: '10', 
+	                artifactDaysToKeepStr: '10', 
+	                artifactNumToKeepStr: '10'
+	                )
+	           )
+            }
+    environment {
+        GIT_CREDENTIALS = 'git-credentials'
+        GIT_REPO_URL = 'https://github.com/edimilsonestevam/labsexample.git'
+        GIT_BRANCH = 'main'
+        PROJECT_DIR = '/var/jenkins_home/workspace/scientific-calculator/scientific-calculator'
+    }
+    stages {
+        stage('Check Environment') {
+            steps {
+                sh 'java -version'
+                sh 'mvn -version'
+                sh 'git --version'
+            }
+        }
+        stage('Code Checkout') {
+            steps {
+                git branch: "${GIT_BRANCH}", 
+                credentialsId: "${GIT_CREDENTIALS}",
+                url: "${GIT_REPO_URL}"
+            }
+        }
+        stage('Test Environment') {
+            steps {
+                    dir("${PROJECT_DIR}") {    
+                        sh 'ls -la'
+                        sh 'find . -name pom.xml'
+                        sh 'mvn clean verify'
+                    } 
+             }
+        }
+        stage('Unit Tests'){
+	        steps{
+                    dir("${PROJECT_DIR}") {    
+                        sh "mvn test"
+                     } 
+	        }
+	                    post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage('Code Coverage') {
+            steps {
+                    dir("${PROJECT_DIR}") {    
+                        sh 'mvn jacoco:report'
+                        publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/site/jacoco',
+                        reportFiles: 'index.html',
+                        reportName: 'JaCoCo Report'
+                    ])
+                     } 
+            }
+        }
+        stage('Package') {
+            steps {
+                    dir("${PROJECT_DIR}") {    
+                        sh 'mvn package -DskipTests'
+                     } 
+            }
+        }
+        stage('Archive Artifact') {
+            steps {
+                    dir("${PROJECT_DIR}") {    
+                        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                     } 
+            }
+        }
+    }
+}
