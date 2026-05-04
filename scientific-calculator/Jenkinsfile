@@ -81,7 +81,6 @@ pipeline {
             }
         }
         stage('Notify') {
-            steps {
                 post {
                     always {
                         emailext (
@@ -95,7 +94,6 @@ pipeline {
                         )
                     }
                 }
-            }
         }
     }
 }
