@@ -78,20 +78,20 @@ pipeline {
                     dir("${PROJECT_DIR}") {    
                         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
                      } 
-                    post {
-                        always {
-                            emailext (
-                                subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
-                                body: """
-                                    Status: ${currentBuild.currentResult}
-                                    Build: ${env.BUILD_NUMBER}
-                                    URL: ${env.BUILD_URL}
-                                    """,
-                                to: "edimilsonestevam@gmail.com"
-                            )
-                        }
-                    }
             }
+                         post {
+                                always {
+                                emailext (
+                                        subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
+                                        body: """
+                                            Status: ${currentBuild.currentResult}
+                                            Build: ${env.BUILD_NUMBER}
+                                            URL: ${env.BUILD_URL}
+                                            """,
+                                        to: "edimilsonestevam@gmail.com"
+                                        )
+                                }
+                        }
         }
     }
 }
