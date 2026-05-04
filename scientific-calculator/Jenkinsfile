@@ -90,7 +90,7 @@ pipeline {
                                 Status: ${currentBuild.currentResult}
                                 Build: ${env.BUILD_NUMBER}
                                 URL: ${env.BUILD_URL}
-                         """,
+                             """,
                             to: "edimilsonestevam@gmail.com"
                         )
                     }
