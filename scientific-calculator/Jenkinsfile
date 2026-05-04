@@ -80,5 +80,22 @@ pipeline {
                      } 
             }
         }
+        stage('Notify') {
+            steps {
+                post {
+                    always {
+                        emailext (
+                            subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
+                            body: """
+                                Status: ${currentBuild.currentResult}
+                                Build: ${env.BUILD_NUMBER}
+                                URL: ${env.BUILD_URL}
+                         """,
+                            to: "edimilsonestevam@gmail.com"
+                        )
+                    }
+                }
+            }
+        }
     }
 }
