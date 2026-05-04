@@ -89,7 +89,7 @@ pipeline {
                                             Build: ${env.BUILD_NUMBER}
                                             URL: ${env.BUILD_URL}
                                             """,
-                                        to: "${env.EMAIL_CREDENTIALS}"
+                                        to: ${env.EMAIL_CREDENTIALS}
                                         )
                                 }
                         }
