@@ -84,9 +84,16 @@ pipeline {
                                 emailext (
                                         subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
                                         body: """
-                                            Status: ${currentBuild.currentResult}
-                                            Build: ${env.BUILD_NUMBER}
+                                            Build Status: ${currentBuild.currentResult}
+                                            Project: ${env.JOB_NAME}
+                                            Build Number: ${env.BUILD_NUMBER}
                                             URL: ${env.BUILD_URL}
+
+                                            Test Results:
+                                            Total: ${TEST_COUNTS, var="total"}
+                                            Passed: ${TEST_COUNTS, var="pass"}
+                                            Failed: ${TEST_COUNTS, var="fail"}
+                                            Skipped: ${TEST_COUNTS, var="skip"}
                                             """,
                                         to: "edimilsonestevam@gmail.com"
                                         )
