@@ -14,6 +14,7 @@ pipeline {
         GIT_REPO_URL = 'https://github.com/edimilsonestevam/labsexample.git'
         GIT_BRANCH = 'main'
         PROJECT_DIR = '/var/jenkins_home/workspace/xray-jenkins-aws/scientific-calculator'
+		EMAIL_CREDENTIALS = 'email-credentials'
     }
     stages {
         stage('Check Environment') {
@@ -88,7 +89,7 @@ pipeline {
                                             Build: ${env.BUILD_NUMBER}
                                             URL: ${env.BUILD_URL}
                                             """,
-                                        to: "edimilsonestevam@gmail.com"
+                                        to: "${env.EMAIL_CREDENTIALS}"
                                         )
                                 }
                         }
