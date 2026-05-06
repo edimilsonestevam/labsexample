@@ -86,6 +86,7 @@ pipeline {
                                         subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
                                         body: """
                                             Status: ${currentBuild.currentResult}
+                                            Job: ${env.JOB_NAME}
                                             Build: ${env.BUILD_NUMBER}
                                             URL: ${env.BUILD_URL}
                                             """,
