@@ -86,7 +86,7 @@ pipeline {
 										 
 									   junit(
 											  allowEmptyResults: true,
-											  testResults: 'target/surefire-reports/*.xml'
+											  testResults: '**/surefire-reports/*.xml'
 									   )
 								}
 								failure {
