@@ -14,7 +14,7 @@ pipeline {
         GIT_REPO_URL = 'https://github.com/edimilsonestevam/labsexample.git'
         GIT_BRANCH = 'main'
         PROJECT_DIR = '/var/jenkins_home/workspace/xray-jenkins-aws/scientific-calculator'
-		EMAIL_CREDENTIALS = 'email-credentials'
+		EMAIL_CREDENTIALS = credentials('email-credentials')
     }
     stages {
         stage('Check Environment') {
