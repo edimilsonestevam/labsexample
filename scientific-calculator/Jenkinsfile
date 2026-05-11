@@ -82,7 +82,12 @@ pipeline {
             }
                          post {
                                 always {
-										  junit 'target/surefire-reports/*.xml'
+										 sh 'find . -name "*.xml"'
+										 
+									   junit(
+											  allowEmptyResults: true,
+											  testResults: 'target/surefire-reports/*.xml'
+									   )
 								}
 								failure {
 								          emailext (
