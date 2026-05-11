@@ -82,15 +82,7 @@ pipeline {
             }
                          post {
                                 always {
-						                  emailext (
-                                          subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
-                                          body: """
-                                                Status: ${currentBuild.currentResult}
-                                                Job: ${env.JOB_NAME}
-                                                Build: ${env.BUILD_NUMBER}
-                                                URL: ${env.BUILD_URL}
-                                                """
-												)
+										  junit '**/target/*.xml'
 								}
 								failure {
 								          emailext (
@@ -103,7 +95,7 @@ pipeline {
                                                 """,
                                           to: "${env.EMAIL_CREDENTIALS}",
 										  attachLog: true
-                                        )
+                                                   )
 								}
                         }
         }
