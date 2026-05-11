@@ -95,7 +95,7 @@ pipeline {
                                                 """,
                                           to: "${env.EMAIL_CREDENTIALS}",
 										  attachLog: true
-                                                   )
+                                          )
 								}
                         }
         }
