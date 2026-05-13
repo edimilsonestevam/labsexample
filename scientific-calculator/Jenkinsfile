@@ -85,7 +85,7 @@ pipeline {
 										 sh 'find . -name "*.xml"'								 
 									   junit(
 											  allowEmptyResults: true,
-											  testResults: '**/target/*.xml'
+											  testResults: '**/surefire-reports/*.xml'
 									   )
 								}
 								failure {
