@@ -10,7 +10,7 @@ class ScientificCalculatorTest {
 
     @Test
     void shouldAddCorrectly() {
-        assertEquals(15, calculator.add(5, 3));
+        assertEquals(5, calculator.add(2, 3));
     }
 
     @Test
