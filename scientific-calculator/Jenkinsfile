@@ -21,11 +21,10 @@ pipeline {
     stages {
         stage('Check Environment') {
             steps {
-                sh 'java -version'
+                sh 'echo $JAVA_HOME'
                 sh 'which java'
                 sh 'readlink -f $(which java)'
-                sh 'echo $JAVA_HOME'
-                sh 'echo $PATH'
+                sh 'java -version'
                 sh 'mvn -version'
                 sh 'git --version'
             }
