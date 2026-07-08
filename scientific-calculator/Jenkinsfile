@@ -68,8 +68,23 @@ pipeline {
                         reportDir: 'target/site/jacoco',
                         reportFiles: 'index.html',
                         reportName: 'JaCoCo Report'
-                    ])
+                        ])
                      } 
+                    post {
+							failure {
+								        emailext (
+                                        subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
+                                        body: """
+                                                Status: ${currentBuild.currentResult}
+                                                Job: ${env.JOB_NAME}
+                                                Build: ${env.BUILD_NUMBER}
+                                                URL: ${env.BUILD_URL}
+                                                """,
+                                          to: "${env.EMAIL_CREDENTIALS}",
+										  attachLog: true
+                                                  )
+								    }
+                        }
             }
         }
         stage('Package') {
