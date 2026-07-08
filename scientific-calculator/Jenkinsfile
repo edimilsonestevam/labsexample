@@ -84,14 +84,13 @@ pipeline {
                     dir("${PROJECT_DIR}") {    
                         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
                      } 
-            }
-                         post {
+                       post {
                                 always {
 										 sh 'find . -name "*.xml"'								 
-									   junit(
+									    junit(
 											  allowEmptyResults: true,
 											  testResults: '**/surefire-reports/*.xml'
-									   )
+									    )
 								}
 								failure {
 								          emailext (
@@ -107,6 +106,7 @@ pipeline {
                                           )
 								}
                         }
+            }            
         }
     }
 }
