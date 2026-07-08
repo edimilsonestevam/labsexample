@@ -13,13 +13,13 @@ pipeline {
     }
 
     environment {
-        GIT_CREDENTIALS  = 'github-credentials'
-        GIT_REPO_URL     = 'https://github.com/edimilsonestevam/labsexample.git'
-        GIT_BRANCH       = 'main'
-        PROJECT_DIR      = '/var/jenkins_home/workspace/xray-jenkins-aws/scientific-calculator'
+        GIT_CREDENTIALS   = 'github-credentials'
+        GIT_REPO_URL      = 'https://github.com/edimilsonestevam/labsexample.git'
+        GIT_BRANCH        = 'main'
+        PROJECT_DIR       = '/var/jenkins_home/workspace/xray-jenkins-aws/scientific-calculator'
         EMAIL_CREDENTIALS = credentials('email-credentials')
-        JAVA_HOME        = '/opt/java/openjdk'
-        PATH             = "${JAVA_HOME}/bin:${env.PATH}"
+        JAVA_HOME         = '/opt/java/openjdk'
+        PATH              = "${JAVA_HOME}/bin:${env.PATH}"
     }
 
     stages {
@@ -141,13 +141,7 @@ pipeline {
                               """,
                         to: "${env.EMAIL_CREDENTIALS}",
                         attachLog: true
-                    )
-                }
-            }
-        }
-    }
-}
-                        """,
+                    """,
                         to: "${env.EMAIL_CREDENTIALS}",
                         attachLog: true
                     )
