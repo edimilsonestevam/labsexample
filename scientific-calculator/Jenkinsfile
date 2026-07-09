@@ -86,7 +86,7 @@ pipeline {
 									     junit(
 											  allowEmptyResults: true,
 											  testResults: '**/surefire-reports/*.xml'
-								)
+								            )
 								}
 								unstable {
 								          emailext (
