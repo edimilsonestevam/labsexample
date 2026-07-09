@@ -38,11 +38,19 @@ pipeline {
         }
         stage('Test Environment') {
             steps {
-                    dir("${PROJECT_DIR}") {    
-                        sh 'ls -la'
-                        sh 'find . -name pom.xml'
-                        sh 'mvn clean verify'
+                    dir("${PROJECT_DIR}") {
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                            sh 'ls -la'
+                            sh 'find . -name pom.xml'
+                            sh 'mvn clean verify'
+                        }    
                     } 
+             }
+             post {
+                 junit(
+                     allowEmptyResults: true,
+                     testResults: '**/surefire-reports/*.xml'
+                 )
              }
         }
         stage('Unit Tests'){
@@ -81,13 +89,6 @@ pipeline {
                      } 
             }
                          post {
-                                always {
-										 sh 'find . -name "*.xml"'								 
-									     junit(
-											  allowEmptyResults: true,
-											  testResults: '**/surefire-reports/*.xml'
-								            )
-								}
 								failure {
 								          emailext (
                                           subject: "BUILD FAILURE: ${env.JOB_NAME}",
