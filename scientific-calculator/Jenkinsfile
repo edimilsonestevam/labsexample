@@ -51,15 +51,15 @@ pipeline {
                         sh "mvn test"
                      } 
                      post {
-                         unsuccessful {
-                                          emailext (
-                                          subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
-                                          body: """
-                                                Status: ${currentBuild.currentResult}
-                                                Job: ${env.JOB_NAME}
-                                                Build: ${env.BUILD_NUMBER}
-                                                URL: ${env.BUILD_URL}
-                                                """,
+                         unstable {
+                                    emailext (
+                                    subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
+                                    body: """
+                                          Status: ${currentBuild.currentResult}
+                                          Job: ${env.JOB_NAME}
+                                          Build: ${env.BUILD_NUMBER}
+                                          URL: ${env.BUILD_URL}
+                                          """,
                                           to: "${env.EMAIL_CREDENTIALS}",
 										  attachLog: true
                                           )
