@@ -56,13 +56,6 @@ pipeline {
 
              }
         }
-        stage('Unit Tests'){
-	        steps{
-                    dir("${PROJECT_DIR}") {    
-                        sh "mvn test"
-                     } 
-	        }
-        }
         stage('Code Coverage') {
             steps {
                     dir("${PROJECT_DIR}") {    
@@ -93,6 +86,9 @@ pipeline {
             }
         }
             post {
+                always {
+                    echo "BUILD STATUS: ${currentBuild.currentResult}"
+                }
 				failure {
 							emailext (
                                         subject: "BUILD FAILURE: ${env.JOB_NAME}",
