@@ -50,21 +50,6 @@ pipeline {
                     dir("${PROJECT_DIR}") {    
                         sh "mvn test"
                      } 
-                     post {
-                         unstable {
-                                    emailext (
-                                    subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
-                                    body: """
-                                          Status: ${currentBuild.currentResult}
-                                          Job: ${env.JOB_NAME}
-                                          Build: ${env.BUILD_NUMBER}
-                                          URL: ${env.BUILD_URL}
-                                          """,
-                                          to: "${env.EMAIL_CREDENTIALS}",
-										  attachLog: true
-                                          )
-                         }
-                     }
 	        }
         }
         stage('Code Coverage') {
@@ -98,12 +83,12 @@ pipeline {
                          post {
                                 always {
 										 sh 'find . -name "*.xml"'								 
-									   junit(
+									     junit(
 											  allowEmptyResults: true,
 											  testResults: '**/surefire-reports/*.xml'
-									   )
+								)
 								}
-								failure {
+								unstable {
 								          emailext (
                                           subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
                                           body: """
