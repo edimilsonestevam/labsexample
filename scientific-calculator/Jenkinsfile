@@ -88,9 +88,22 @@ pipeline {
 											  testResults: '**/surefire-reports/*.xml'
 								            )
 								}
+								failure {
+								          emailext (
+                                          subject: "BUILD FAILURE: ${env.JOB_NAME}",
+                                          body: """
+                                                Status: ${currentBuild.currentResult}
+                                                Job: ${env.JOB_NAME}
+                                                Build: ${env.BUILD_NUMBER}
+                                                URL: ${env.BUILD_URL}
+                                                """,
+                                          to: "${env.EMAIL_CREDENTIALS}",
+										  attachLog: true
+                                          )
+								}
 								unstable {
 								          emailext (
-                                          subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME}",
+                                          subject: "BUILD UNSTABLE: ${env.JOB_NAME}",
                                           body: """
                                                 Status: ${currentBuild.currentResult}
                                                 Job: ${env.JOB_NAME}
