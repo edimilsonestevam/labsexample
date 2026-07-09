@@ -91,34 +91,34 @@ pipeline {
                         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
                      } 
             }
-                         post {
-								failure {
-								          emailext (
-                                          subject: "BUILD FAILURE: ${env.JOB_NAME}",
-                                          body: """
-                                                Status: ${currentBuild.currentResult}
-                                                Job: ${env.JOB_NAME}
-                                                Build: ${env.BUILD_NUMBER}
-                                                URL: ${env.BUILD_URL}
-                                                """,
-                                          to: "${env.EMAIL_CREDENTIALS}",
-										  attachLog: true
-                                          )
-								}
-								unstable {
-								          emailext (
-                                          subject: "BUILD UNSTABLE: ${env.JOB_NAME}",
-                                          body: """
-                                                Status: ${currentBuild.currentResult}
-                                                Job: ${env.JOB_NAME}
-                                                Build: ${env.BUILD_NUMBER}
-                                                URL: ${env.BUILD_URL}
-                                                """,
-                                          to: "${env.EMAIL_CREDENTIALS}",
-										  attachLog: true
-                                          )
-								}
-                            }
         }
+            post {
+				failure {
+							emailext (
+                                        subject: "BUILD FAILURE: ${env.JOB_NAME}",
+                                        body: """
+                                            Status: ${currentBuild.currentResult}
+                                            Job: ${env.JOB_NAME}
+                                            Build: ${env.BUILD_NUMBER}
+                                            URL: ${env.BUILD_URL}
+                                            """,
+                                        to: "${env.EMAIL_CREDENTIALS}",
+										attachLog: true
+                                    )
+						}
+				unstable {
+							emailext (
+                                        subject: "BUILD UNSTABLE: ${env.JOB_NAME}",
+                                        body: """
+                                            Status: ${currentBuild.currentResult}
+                                            Job: ${env.JOB_NAME}
+                                            Build: ${env.BUILD_NUMBER}
+                                            URL: ${env.BUILD_URL}
+                                            """,
+                                          to: "${env.EMAIL_CREDENTIALS}",
+										  attachLog: true
+                                          )
+						}
+                }
     }
 }
