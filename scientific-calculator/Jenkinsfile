@@ -1,24 +1,31 @@
 pipeline {
     agent any
-            options{
-	            buildDiscarder(logRotator(
-	                daysToKeepStr: '10', 
-	                numToKeepStr: '10', 
-	                artifactDaysToKeepStr: '10', 
-	                artifactNumToKeepStr: '10'
-	                )
-	           )
-            }
+
+    options {
+        buildDiscarder(
+            logRotator(
+                daysToKeepStr: '10',
+                numToKeepStr: '10',
+                artifactDaysToKeepStr: '10',
+                artifactNumToKeepStr: '10'
+            )
+        )
+    }
+
     environment {
         GIT_CREDENTIALS = 'github-credentials'
         GIT_REPO_URL = 'https://github.com/edimilsonestevam/labsexample.git'
         GIT_BRANCH = 'main'
         PROJECT_DIR = '/var/jenkins_home/workspace/xray-jenkins-aws/scientific-calculator'
-		EMAIL_CREDENTIALS = credentials('email-credentials')
+
+        EMAIL_CREDENTIALS = credentials('email-credentials')
+
         JAVA_HOME = '/opt/java/openjdk'
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
+
     stages {
+
         stage('Check Environment') {
             steps {
                 sh 'echo $JAVA_HOME'
@@ -29,92 +36,109 @@ pipeline {
                 sh 'git --version'
             }
         }
+
         stage('Code Checkout') {
             steps {
-                git branch: "${GIT_BRANCH}", 
-                credentialsId: "${GIT_CREDENTIALS}",
-                url: "${GIT_REPO_URL}"
+                git(
+                    branch: "${GIT_BRANCH}",
+                    credentialsId: "${GIT_CREDENTIALS}",
+                    url: "${GIT_REPO_URL}"
+                )
             }
         }
+
         stage('Test Environment') {
             steps {
-                    dir("${PROJECT_DIR}") {
-                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                            sh 'ls -la'
-                            sh 'find . -name pom.xml'
-                            sh 'mvn clean verify'
-                        }    
-                    } 
-             }
-             post {
-                 always {
-                            junit(
-                            allowEmptyResults: true,
-                            testResults: '**/surefire-reports/*.xml'
-                             )
+                dir("${PROJECT_DIR}") {
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        sh 'ls -la'
+                        sh 'find . -name pom.xml'
+                        sh 'mvn clean verify'
                     }
+                }
+            }
 
-             }
-        }
-        stage('Code Coverage') {
-            steps {
-                    dir("${PROJECT_DIR}") {    
-                        sh 'mvn jacoco:report'
-                        publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'target/site/jacoco',
-                        reportFiles: 'index.html',
-                        reportName: 'JaCoCo Report'
-                        ])
-                     } 
-            }
-        }
-        stage('Package') {
-            steps {
-                    dir("${PROJECT_DIR}") {    
-                        sh 'mvn package -DskipTests'
-                     } 
-            }
-        }
-        stage('Archive Artifact') {
-            steps {
-                    dir("${PROJECT_DIR}") {    
-                        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                     } 
-            }
-        }
             post {
                 always {
-                    echo "BUILD STATUS: ${currentBuild.currentResult}"
+                    junit(
+                        allowEmptyResults: true,
+                        testResults: '**/surefire-reports/*.xml'
+                    )
                 }
-				failure {
-							emailext (
-                                        subject: "BUILD FAILURE: ${env.JOB_NAME}",
-                                        body: """
-                                            Status: ${currentBuild.currentResult}
-                                            Job: ${env.JOB_NAME}
-                                            Build: ${env.BUILD_NUMBER}
-                                            URL: ${env.BUILD_URL}
-                                            """,
-                                        to: "${env.EMAIL_CREDENTIALS}",
-										attachLog: true
-                                    )
-						}
-				unstable {
-							emailext (
-                                        subject: "BUILD UNSTABLE: ${env.JOB_NAME}",
-                                        body: """
-                                            Status: ${currentBuild.currentResult}
-                                            Job: ${env.JOB_NAME}
-                                            Build: ${env.BUILD_NUMBER}
-                                            URL: ${env.BUILD_URL}
-                                            """,
-                                          to: "${env.EMAIL_CREDENTIALS}",
-										  attachLog: true
-                                          )
-						}
+            }
+        }
+
+        stage('Code Coverage') {
+            steps {
+                dir("${PROJECT_DIR}") {
+                    sh 'mvn jacoco:report'
+
+                    publishHTML(
+                        target: [
+                            allowMissing: false,
+                            alwaysLinkToLastBuild: true,
+                            keepAll: true,
+                            reportDir: 'target/site/jacoco',
+                            reportFiles: 'index.html',
+                            reportName: 'JaCoCo Report'
+                        ]
+                    )
                 }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                dir("${PROJECT_DIR}") {
+                    sh 'mvn package -DskipTests'
+                }
+            }
+        }
+
+        stage('Archive Artifact') {
+            steps {
+                dir("${PROJECT_DIR}") {
+                    archiveArtifacts(
+                        artifacts: 'target/*.jar',
+                        fingerprint: true
+                    )
+                }
+            }
+        }
+    }
+
+    post {
+
+        always {
+            echo "BUILD STATUS: ${currentBuild.currentResult}"
+        }
+
+        failure {
+            emailext(
+                subject: "BUILD FAILURE: ${env.JOB_NAME}",
+                body: """
+Status: ${currentBuild.currentResult}
+Job: ${env.JOB_NAME}
+Build: ${env.BUILD_NUMBER}
+URL: ${env.BUILD_URL}
+""",
+                to: "${env.EMAIL_CREDENTIALS}",
+                attachLog: true
+            )
+        }
+
+        unstable {
+            emailext(
+                subject: "BUILD UNSTABLE: ${env.JOB_NAME}",
+                body: """
+Status: ${currentBuild.currentResult}
+Job: ${env.JOB_NAME}
+Build: ${env.BUILD_NUMBER}
+URL: ${env.BUILD_URL}
+""",
+                to: "${env.EMAIL_CREDENTIALS}",
+                attachLog: true
+            )
+        }
     }
 }
