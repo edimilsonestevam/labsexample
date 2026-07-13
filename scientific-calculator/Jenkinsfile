@@ -20,7 +20,7 @@ pipeline {
 
         EMAIL_CREDENTIALS = credentials('email-credentials')
 
-        JAVA_HOME = '/opt/java/openjdk-25'
+        JAVA_HOME = '/opt/java/openjdk'
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
 
