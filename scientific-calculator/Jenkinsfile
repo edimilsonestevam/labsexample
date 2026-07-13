@@ -20,7 +20,7 @@ pipeline {
 
         EMAIL_CREDENTIALS = credentials('email-credentials')
 
-        JAVA_HOME = '/opt/java/openjdk'
+        JAVA_HOME = '/opt/java/openjdk-25'
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
 
@@ -50,7 +50,7 @@ pipeline {
         stage('Test Environment') {
             steps {
                 dir("${PROJECT_DIR}") {
-                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                    catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                         sh 'ls -la'
                         sh 'find . -name pom.xml'
                         sh 'mvn clean verify'
