@@ -126,19 +126,5 @@ URL: ${env.BUILD_URL}
                 attachLog: true
             )
         }
-
-        unstable {
-            emailext(
-                subject: "BUILD UNSTABLE: ${env.JOB_NAME}",
-                body: """
-Status: ${currentBuild.currentResult}
-Job: ${env.JOB_NAME}
-Build: ${env.BUILD_NUMBER}
-URL: ${env.BUILD_URL}
-""",
-                to: "${env.EMAIL_CREDENTIALS}",
-                attachLog: true
-            )
-        }
     }
 }
